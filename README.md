@@ -10,9 +10,7 @@ These scripts are built specifically for a Philadelphia area radio station (radi
 
 The scripts output two files in the results directory every time they are run: a view per year and a view per decade.
 
-![Year](examples/year.png)
-
-![Decade](examples/decade.png)
+![Year](examples/year.png)  ![Decade](examples/decade.png)
 
 
 #### Basic Process
