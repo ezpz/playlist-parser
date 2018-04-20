@@ -6,6 +6,14 @@ A database (CSV file) of previously seen/queried entries is maintained which all
 
 These scripts are built specifically for a Philadelphia area radio station (radio1045) but likely have a broader applicability to other iHeartRadio stations. 
 
+#### Examples
+
+The scripts output two files in the results directory every time they are run: a view per year and a view per decade.
+
+![Year](examples/year.png)
+
+![Decade](examples/decade.png)
+
 
 #### Basic Process
 
