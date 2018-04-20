@@ -156,6 +156,7 @@ def build_song_info date, artist, song
     return $songs.size
 end
 
+# Returns true if the song already exists in the db
 def add_song date, artist, title
     if known_time date
         trace "Duplicate: %s" % [date]
@@ -167,7 +168,7 @@ def add_song date, artist, title
         detail[0] = date
         $songs << detail
         puts "Added song #%d (%s by %s)" % [$songs.size, title, artist]
-        return
+        return true
     end
     song_num = build_song_info date, artist, title
     if song_num
@@ -175,6 +176,7 @@ def add_song date, artist, title
     else
         raise
     end
+    false
 end
 
 def get_setlist
@@ -205,8 +207,8 @@ doc.css('.playlist-track-container').each do |item|
         artist = item.css('.track-artist')[0].text.strip
         title = item.css('.track-title')[0].text.strip
         date = format_date(item.css('figcaption span')[0].text.strip)
-        add_song date, artist, title
-        sleep(rand(5) + 5)
+        existed = add_song date, artist, title
+        sleep(rand(5) + 5) unless existed
     rescue
         aid = ""
         if $artists.include? artist
