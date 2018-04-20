@@ -160,7 +160,7 @@ end
 def add_song date, artist, title
     if known_time date
         trace "Duplicate: %s" % [date]
-        return
+        return true
     end
     detail = lookup_song artist, title
     unless detail.nil?
