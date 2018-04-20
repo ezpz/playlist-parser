@@ -9,6 +9,7 @@ DB = 'database/song.db'
 DBBKUP = 'database/song.db.orig'
 DBTMP = 'database/song.db.tmp'
 SETLIST = 'index.html'
+FAILDB = 'database/failed_songs.txt'
 
 $artists = {} # {name => [proper name, id]}
 $songs = [] # [date, artist, title, year, proper_name, id] 
@@ -178,9 +179,10 @@ end
 
 def get_setlist
     FileUtils.rm_f SETLIST
-    puts "Loading most recent setlist..."
+    print "Loading most recent setlist..."
+    $stdout.flush
     `wget -q -O #{SETLIST} https://radio1045.iheart.com/music/recently-played/`
-    puts "...done"
+    puts "done"
     unless File.exists? SETLIST
         puts "Failed to generate setlist. Exiting"
         exit 1
@@ -190,7 +192,6 @@ end
 def make_plot
     `Rscript --vanilla plot.R`
 end
-
 
 
 
@@ -205,26 +206,30 @@ doc.css('.playlist-track-container').each do |item|
         title = item.css('.track-title')[0].text.strip
         date = format_date(item.css('figcaption span')[0].text.strip)
         add_song date, artist, title
-        sleep(rand(10) + 5)
+        sleep(rand(5) + 5)
     rescue
         aid = ""
         if $artists.include? artist
             aid = $artists[artist][1]
         end
         begin
-            fails = File.open('failed_songs.txt', 'ab')
+            fails = File.open(FAILDB, 'ab')
             fails.puts " xx->  ARTIST: '%s' %s" % [artist, aid]
             fails.puts " xx->  TITLE : '%s'" % [title]
             fails.puts " xx->  DATE  : '%s'" % [date]
+            fails.puts
             fails.close
         rescue
         end
         puts " xx->  ARTIST: '%s' %s" % [artist, aid]
         puts " xx->  TITLE : '%s'" % [title]
         puts " xx->  DATE  : '%s'" % [date]
-        sleep(rand(10) + 5)
+        sleep(rand(5) + 5)
     end
 end
 
 save_song_database
 make_plot
+
+FileUtils.rm_f SETLIST
+
